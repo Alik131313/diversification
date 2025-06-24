@@ -19,15 +19,12 @@
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
             height: 300px;
-            max-height: 40vh;
+            max-height: 45vh;
         }
         @media (min-width: 768px) {
             .chart-container {
-                height: 350px;
+                height: 400px;
             }
         }
         .flowchart-arrow {
@@ -76,16 +73,34 @@
     <main class="container mx-auto p-4 md:p-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <section class="md:col-span-2 lg:col-span-3 bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-center justify-center gap-6">
-                <div class="text-center">
-                    <p class="text-8xl font-black text-[#FF6B6B]">100%</p>
-                    <p class="text-xl font-bold mt-2">Продаж через маркетплейсы</p>
-                </div>
-                <div class="text-5xl font-bold text-gray-300 hidden md:block">&rarr;</div>
-                 <div class="text-5xl font-bold text-gray-300 md:hidden">&darr;</div>
-                <div class="text-center">
-                    <p class="text-3xl md:text-4xl font-bold text-[#06D6A0]">Время для диверсификации!</p>
-                    <p class="text-md text-gray-600 mt-2">Снижение рисков за счет освоения новых каналов, продуктов и аудиторий.</p>
+            <section class="md:col-span-2 lg:col-span-3 bg-red-50 border-2 border-dashed border-red-500 rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-center mb-1 text-red-700">Отправная точка: Почему диверсификация — это необходимость</h2>
+                <p class="text-center text-gray-600 mb-6">Анализ динамики цен на Wildberries по нашим ТОП-артикулам за первое полугодие 2025 года показывает тревожную тенденцию.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
+                    <div class="lg:col-span-3 chart-container">
+                        <canvas id="priceDropChart"></canvas>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <h3 class="font-bold text-xl mb-2">🧨 Что это означает:</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-red-500 font-bold text-xl mr-2">→</span>
+                                <div><strong class="font-semibold">Демпинг усиливается:</strong> Наша маржа и прибыль падают с каждым месяцем.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-500 font-bold text-xl mr-2">→</span>
+                                <div><strong class="font-semibold">Мы не контролируем цену:</strong> Маркетплейс и конкуренты диктуют рыночные условия.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-500 font-bold text-xl mr-2">→</span>
+                                <div><strong class="font-semibold">Ценообразование работает против нас,</strong> особенно на фоне роста издержек.</div>
+                            </li>
+                        </ul>
+                         <div class="mt-6 p-4 bg-green-100 border-l-4 border-green-500 rounded">
+                            <h3 class="font-bold text-lg text-green-800">💡 Главный вывод:</h3>
+                            <p class="text-green-700">Необходима срочная диверсификация для возвращения контроля над ценой, повышения ценности бренда и вывода на рынок более маржинальных продуктов.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
             
@@ -434,54 +449,120 @@
                 }
             }
             
+            // Price Drop Chart
+            const priceDropCtx = document.getElementById('priceDropChart');
+            if (priceDropCtx) {
+                new Chart(priceDropCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь'],
+                        datasets: [
+                            {
+                                label: 'Арт. 1355390',
+                                data: [3800, 3750, 3600, 3400, 3250, 3100],
+                                borderColor: '#118AB2',
+                                backgroundColor: 'rgba(17, 138, 178, 0.1)',
+                                tension: 0.1,
+                                fill: true,
+                            },
+                            {
+                                label: 'Арт. 135521',
+                                data: [3400, 3300, 3250, 3100, 3000, 2850],
+                                borderColor: '#06D6A0',
+                                backgroundColor: 'rgba(6, 214, 160, 0.1)',
+                                tension: 0.1,
+                                fill: true,
+                            },
+                             {
+                                label: 'Средняя цена ТОП-20',
+                                data: [3650, 3580, 3480, 3310, 3190, 3050],
+                                borderColor: '#FF6B6B',
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                tension: 0.1,
+                                borderWidth: 3,
+                                fill: true,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Динамика цен ВБ на ТОП-20 по месяцам 2025'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + ' ₽';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
             // Gemini API integrations
             const generateProductIdeasBtn = document.getElementById('generateProductIdeasBtn');
             const productIdeasLoader = document.getElementById('productIdeasLoader');
             const productIdeasResponse = document.getElementById('productIdeasResponse');
 
-            generateProductIdeasBtn.addEventListener('click', async () => {
-                productIdeasLoader.style.display = 'block';
-                productIdeasResponse.classList.add('hidden');
-                generateProductIdeasBtn.disabled = true;
+            if (generateProductIdeasBtn) {
+                generateProductIdeasBtn.addEventListener('click', async () => {
+                    productIdeasLoader.style.display = 'block';
+                    productIdeasResponse.classList.add('hidden');
+                    generateProductIdeasBtn.disabled = true;
 
-                const prompt = "Ты — стратегический консультант для компании 'ЛЕТТА', которая производит корпусную мебель в сегменте 'суперэконом'. Предложи 3 конкретные и инновационные идеи новых продуктов. Идеи должны быть недорогими в производстве, но обладать высокой воспринимаемой ценностью для определенной нишевой аудитории. Ответ представь в виде нумерованного списка: название продукта и краткое описание.";
-                const responseText = await callGemini(prompt);
-                
-                productIdeasResponse.textContent = responseText;
-                productIdeasLoader.style.display = 'none';
-                productIdeasResponse.classList.remove('hidden');
-                generateProductIdeasBtn.disabled = false;
-            });
+                    const prompt = "Ты — стратегический консультант для компании 'ЛЕТТА', которая производит корпусную мебель в сегменте 'суперэконом'. Предложи 3 конкретные и инновационные идеи новых продуктов. Идеи должны быть недорогими в производстве, но обладать высокой воспринимаемой ценностью для определенной нишевой аудитории. Ответ представь в виде нумерованного списка: название продукта и краткое описание.";
+                    const responseText = await callGemini(prompt);
+                    
+                    productIdeasResponse.textContent = responseText;
+                    productIdeasLoader.style.display = 'none';
+                    productIdeasResponse.classList.remove('hidden');
+                    generateProductIdeasBtn.disabled = false;
+                });
+            }
+
 
             const generateRoomConceptBtn = document.getElementById('generateRoomConceptBtn');
             const roomConceptInput = document.getElementById('roomConceptInput');
             const roomConceptLoader = document.getElementById('roomConceptLoader');
             const roomConceptResponse = document.getElementById('roomConceptResponse');
 
-            generateRoomConceptBtn.addEventListener('click', async () => {
-                const userInput = roomConceptInput.value;
-                if (!userInput.trim()) {
-                    // Replaced alert with a more subtle UI feedback
-                    roomConceptInput.placeholder = 'Пожалуйста, введите тему!';
-                    roomConceptInput.classList.add('border-red-500');
-                    setTimeout(() => {
-                         roomConceptInput.placeholder = 'Например: гостиная для геймера, спальня для молодой семьи...';
-                         roomConceptInput.classList.remove('border-red-500');
-                    }, 2000);
-                    return;
-                }
-                roomConceptLoader.style.display = 'block';
-                roomConceptResponse.classList.add('hidden');
-                generateRoomConceptBtn.disabled = true;
-                
-                const prompt = `Ты — креативный дизайнер интерьеров. Мебельная компания 'ЛЕТТА' (суперэконом сегмент) создает небольшие шоурумы 'Точки комфорта'. Сгенерируй креативную концепцию для такого шоурума на тему: "${userInput}". Опиши: 1. Мебельную композицию из возможного каталога 'ЛЕТТА'. 2. Общую атмосферу и стиль. 3. Цветовую палитру. 4. Одну уникальную 'фишку', которая привлечет покупателей. Ответ отформатируй с четкими заголовками.`;
-                const responseText = await callGemini(prompt);
+            if(generateRoomConceptBtn) {
+                generateRoomConceptBtn.addEventListener('click', async () => {
+                    const userInput = roomConceptInput.value;
+                    if (!userInput.trim()) {
+                        // Replaced alert with a more subtle UI feedback
+                        roomConceptInput.placeholder = 'Пожалуйста, введите тему!';
+                        roomConceptInput.classList.add('border-red-500');
+                        setTimeout(() => {
+                             roomConceptInput.placeholder = 'Например: гостиная для геймера, спальня для молодой семьи...';
+                             roomConceptInput.classList.remove('border-red-500');
+                        }, 2000);
+                        return;
+                    }
+                    roomConceptLoader.style.display = 'block';
+                    roomConceptResponse.classList.add('hidden');
+                    generateRoomConceptBtn.disabled = true;
+                    
+                    const prompt = `Ты — креативный дизайнер интерьеров. Мебельная компания 'ЛЕТТА' (суперэконом сегмент) создает небольшие шоурумы 'Точки комфорта'. Сгенерируй креативную концепцию для такого шоурума на тему: "${userInput}". Опиши: 1. Мебельную композицию из возможного каталога 'ЛЕТТА'. 2. Общую атмосферу и стиль. 3. Цветовую палитру. 4. Одну уникальную 'фишку', которая привлечет покупателей. Ответ отформатируй с четкими заголовками.`;
+                    const responseText = await callGemini(prompt);
 
-                roomConceptResponse.textContent = responseText;
-                roomConceptLoader.style.display = 'none';
-                roomConceptResponse.classList.remove('hidden');
-                generateRoomConceptBtn.disabled = false;
-            });
+                    roomConceptResponse.textContent = responseText;
+                    roomConceptLoader.style.display = 'none';
+                    roomConceptResponse.classList.remove('hidden');
+                    generateRoomConceptBtn.disabled = false;
+                });
+            }
         });
     </script>
 </body>
